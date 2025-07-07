@@ -2,28 +2,20 @@
 
 import { useCart } from "@/components/cart-provider"
 import { Button } from "@/components/ui/button"
-import { createCart } from "@/lib/shopify"
 import { useRouter } from "next/navigation"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 
 export default function Cart() {
-  const { items, totalItems, totalPrice, removeItem, updateQuantity, clearCart } = useCart()
+  const { items, totalItems, totalPrice, removeItem, updateQuantity, clearCart, checkoutUrl } = useCart()
   const router = useRouter()
 
-  async function handleCheckout() {
-    const lineItems = items.map(item => ({
-      merchandiseId: item.merchandiseId,
-      quantity: item.quantity
-    }))
-
-    try {
-      const cart = await createCart(lineItems)
-      clearCart()
-      router.push(cart.checkoutUrl)
-    } catch (error) {
-      console.error("Failed to create checkout:", error)
+  function handleCheckout() {
+    if (checkoutUrl) {
+      router.push(checkoutUrl)
+    } else {
+      console.error("Checkout URL not available")
       // You might want to show an error message to the user here
     }
   }

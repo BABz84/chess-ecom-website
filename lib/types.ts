@@ -29,6 +29,10 @@ export type Product = {
   handle: string;
   description: string;
   descriptionHtml: string;
+  featuredImage?: {
+    url: string;
+    altText?: string;
+  };
   images: {
     nodes: {
       url: string;
@@ -47,5 +51,21 @@ export type Product = {
   };
   variants: {
     nodes: ProductVariant[];
+  };
+};
+
+export type ProductCardData = {
+  id: string;
+  handle: string;
+  title: string;
+  featuredImage?: {
+    url: string;
+    altText?: string;
+  };
+  images?: {
+    nodes: {
+      url: string;
+      altText: string | null;
+    }[];
   };
 };

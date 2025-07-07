@@ -1,11 +1,8 @@
-import { getProductsInCollection } from "@/lib/shopify"
 import HeroCarousel from "./hero-carousel"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Crown, Palette, Shirt } from "lucide-react"
 
-export default async function HeroSection() {
-  const heroProducts = await getProductsInCollection("hero-carousel")
-
+export default function HeroSection({ heroProducts }: { heroProducts: any[] }) {
   return (
     <section className="relative red-pattern-bg overflow-hidden h-screen flex items-center">
       {/* Red pattern overlay */}
@@ -50,10 +47,12 @@ export default async function HeroSection() {
             </div>
 
             <div className="flex justify-center pt-2">
-              <Button size="lg" className="btn-red px-8 py-4 text-lg font-semibold">
-                Browse All Collections
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <a href="/collections/all">
+                <Button size="lg" className="btn-red px-8 py-4 text-lg font-semibold">
+                  Browse All Collections
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </a>
             </div>
           </div>
 

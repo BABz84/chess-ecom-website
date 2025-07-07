@@ -1,6 +1,7 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createCart, addCartLines, removeCartLines, updateCartLines } from "@/lib/shopify"
 
 interface CartItem {
   id: string
@@ -19,14 +20,45 @@ interface CartContextType {
   clearCart: () => void
   totalItems: number
   totalPrice: number
+  checkoutUrl: string | null
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [cartId, setCartId] = useState<string | null>(null)
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null)
 
-  const addItem = (newItem: Omit<CartItem, "quantity">) => {
+  useEffect(() => {
+    const localCart = window.localStorage.getItem("cart")
+    if (localCart) {
+      const { items, cartId, checkoutUrl } = JSON.parse(localCart)
+      setItems(items)
+      setCartId(cartId)
+      setCheckoutUrl(checkoutUrl)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (items.length > 0) {
+      window.localStorage.setItem("cart", JSON.stringify({ items, cartId, checkoutUrl }))
+    } else {
+      window.localStorage.removeItem("cart")
+    }
+  }, [items, cartId, checkoutUrl])
+
+  const addItem = async (newItem: Omit<CartItem, "quantity">) => {
+    let newCartId = cartId
+    if (!newCartId) {
+      const cart = await createCart([{ merchandiseId: newItem.merchandiseId, quantity: 1 }])
+      newCartId = cart.id
+      setCartId(cart.id)
+      setCheckoutUrl(cart.checkoutUrl)
+    } else {
+      await addCartLines(newCartId, [{ merchandiseId: newItem.merchandiseId, quantity: 1 }])
+    }
+
     setItems((prev) => {
       const existingItem = prev.find((item) => item.id === newItem.id)
       if (existingItem) {
@@ -36,16 +68,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
     })
   }
 
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id))
+  const removeItem = async (id: string) => {
+    if (cartId) {
+      await removeCartLines(cartId, [id])
+      setItems((prev) => prev.filter((item) => item.id !== id))
+    }
   }
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const updateQuantity = async (id: string, quantity: number) => {
     if (quantity <= 0) {
       removeItem(id)
       return
     }
-    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, quantity } : item)))
+
+    if (cartId) {
+      await updateCartLines(cartId, [{ id, quantity }])
+      setItems((prev) => prev.map((item) => (item.id === id ? { ...item, quantity } : item)))
+    }
   }
 
   const clearCart = () => {
@@ -65,6 +104,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        checkoutUrl,
       }}
     >
       {children}

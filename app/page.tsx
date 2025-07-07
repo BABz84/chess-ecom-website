@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import HeroSection from "@/components/hero-section"
-import { getProductsInCollection } from "@/lib/shopify"
+import { fetchCollection } from "@/lib/shopify"
 import FeaturedProducts from "@/components/featured-products"
 import AboutSection from "@/components/about-section"
 import ChessPiecesShowcase from "@/components/chess-pieces-showcase"
@@ -10,11 +10,14 @@ import PrintifyShowcase from "@/components/printify-showcase"
 import FreeResources from "@/components/free-resources"
 import { ProductCardSkeleton } from "@/components/product-card"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const heroCarouselCollection = await fetchCollection("hero-carousel")
+  const heroProducts = heroCarouselCollection ? heroCarouselCollection.products.nodes : []
+
   return (
     <main>
       {/* Hero - explains what you can buy */}
-      <HeroSection />
+      <HeroSection heroProducts={heroProducts} />
 
       {/* Product Section 1 - Featured Products */}
       <Suspense fallback={<ProductCardSkeleton />}>
@@ -23,11 +26,6 @@ export default function HomePage() {
 
       {/* Story Section 1 - About Mansa Gallery */}
       <AboutSection />
-
-      {/* Product Section 2 - Chess Pieces */}
-      <Suspense fallback={<ProductCardSkeleton />}>
-        <ChessPiecesShowcase collectionHandle="chess-pieces" />
-      </Suspense>
 
       {/* Story Section 2 - Who We Are */}
       <WhoWeAreSection />

@@ -3,41 +3,16 @@ import Link from "next/link"
 import { Star, Heart, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { ProductCardData } from "@/lib/types"
 
-interface Product {
-  id: string
-  title: string
-  handle?: string
-  priceRange?: {
-    minVariantPrice: {
-      amount: string
-    }
-  }
-  images: {
-    edges: {
-      node: {
-        originalSrc: string
-        altText: string
-      }
-    }[]
-  }
-  rating?: number
-  reviewCount?: number
-  badge?: string
-  description: string
-  story?: string
-  category: string
-}
-
-export default function ProductCard({ product }: { product: Product }) {
-  console.log("Product in Card:", product);
+export default function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <Link href={`/products/${product.handle || product.id}`} className="group block">
       <div className="overflow-hidden rounded-lg border shadow-sm transition-all duration-300 hover:shadow-lg">
         <div className="aspect-square overflow-hidden">
           <Image
-            src={product.images.edges[0]?.node.originalSrc || "/placeholder.svg"}
-            alt={product.images.edges[0]?.node.altText || product.title}
+            src={product.featuredImage?.url || "/placeholder.svg"}
+            alt={product.featuredImage?.altText || product.title}
             width={400}
             height={400}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"

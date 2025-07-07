@@ -22,13 +22,26 @@ export default function HeroCarousel({ heroProducts }: { heroProducts: any[] }) 
     return () => clearInterval(interval)
   }, [heroProducts])
 
+  if (!heroProducts || heroProducts.length === 0) {
+    return (
+      <div className="relative flex items-center justify-center">
+        <div className="aspect-square bg-gradient-to-br from-red-100 to-red-200 rounded-2xl p-4 shadow-2xl card-red relative max-w-sm w-full">
+          <div className="w-full h-full bg-slate-200 animate-pulse rounded-lg" />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative flex items-center justify-center">
       <div className="aspect-square bg-gradient-to-br from-red-100 to-red-200 rounded-2xl p-4 shadow-2xl card-red relative max-w-sm w-full">
         {heroProducts.length > 0 && (
           <img
-            src={heroProducts[currentImageIndex].node.images.edges[0]?.node.originalSrc || "/placeholder.svg"}
-            alt={heroProducts[currentImageIndex].node.images.edges[0]?.node.altText || heroProducts[currentImageIndex].node.title}
+            src={heroProducts[currentImageIndex].images.nodes[0]?.url || "/placeholder.svg"}
+            alt={
+              heroProducts[currentImageIndex].images.nodes[0]?.altText ||
+              heroProducts[currentImageIndex].title
+            }
             className={`w-full h-full object-cover rounded-lg transition-all duration-600 ${
               isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
@@ -40,7 +53,7 @@ export default function HeroCarousel({ heroProducts }: { heroProducts: any[] }) 
       {heroProducts.length > 0 && (
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
           <div className="bg-white/90 backdrop-blur rounded-full px-3 py-2 shadow-lg">
-            <span className="text-sm font-medium text-slate-800">{heroProducts[currentImageIndex].node.title}</span>
+            <span className="text-sm font-medium text-slate-800">{heroProducts[currentImageIndex].title}</span>
           </div>
         </div>
       )}

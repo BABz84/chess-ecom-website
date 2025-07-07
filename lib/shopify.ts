@@ -1,59 +1,83 @@
-// Shopify integration utilities
-const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN
-const storefrontAccessToken = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN
-const adminAccessToken = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN
+import { createStorefrontApiClient } from '@shopify/storefront-api-client';
 
-async function ShopifyData(query: string, isAdmin = false) {
-  const URL = `${domain}/api/2024-04/graphql.json`
+const client = createStorefrontApiClient({
+  storeDomain: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!,
+  apiVersion: '2024-04',
+  publicAccessToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN!,
+});
 
-  const options = {
-    endpoint: URL,
-    method: "POST",
-    headers: {
-      "X-Shopify-Storefront-Access-Token": !isAdmin ? storefrontAccessToken! : "",
-      "X-Shopify-Access-Token": isAdmin ? adminAccessToken! : "",
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query }),
-  }
-
+async function ShopifyData(query: string, variables: object = {}) {
   try {
-    const response = await fetch(URL, options)
-    const data = await response.json()
+    const { data, errors } = await client.request(query, { variables });
 
-    if (!response.ok) {
-      throw new Error(data.errors?.[0]?.message ?? "Failed to fetch Shopify data")
+    if (errors) {
+      console.error("Shopify API Errors:", JSON.stringify(errors, null, 2));
+      throw new Error("Failed to fetch Shopify data");
     }
 
-    return data
+    return data;
   } catch (error) {
-    console.error("Shopify API Error:", error)
-    throw new Error("Products not fetched")
+    console.error("Shopify API Error:", error);
+    throw new Error("Products not fetched");
   }
 }
 
-export async function getProductsInCollection(handle: string) {
+export async function fetchCollection(handle: string) {
   const query = `
-    {
-      collection(handle: "${handle}") {
-        products(first: 25) {
-          edges {
-            node {
-              id
-              title
-              handle
-              priceRange {
-                minVariantPrice {
-                  amount
-                }
+    query CollectionWithProducts($handle: String!) {
+      collectionByHandle(handle: $handle) {
+        id
+        title
+        products(first: 250) {
+          nodes {
+            id
+            title
+            handle
+            description
+            descriptionHtml
+            featuredImage {
+              url
+              altText
+            }
+            images(first: 10) {
+              nodes {
+                url
+                altText
               }
-              images(first: 1) {
-                edges {
-                  node {
-                    originalSrc
-                    altText
-                  }
+            }
+            options {
+              name
+              values
+            }
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            variants(first: 250) {
+              nodes {
+                id
+                title
+                quantityAvailable
+                availableForSale
+                selectedOptions {
+                  name
+                  value
+                }
+                image {
+                  url
+                  altText
+                  width
+                  height
+                }
+                price {
+                  amount
+                  currencyCode
+                }
+                compareAtPrice {
+                  amount
+                  currencyCode
                 }
               }
             }
@@ -62,10 +86,10 @@ export async function getProductsInCollection(handle: string) {
       }
     }
   `
+  const variables = { handle }
+  const response = await ShopifyData(query, variables)
 
-  const response = await ShopifyData(query)
-  const allProducts = response.data.collection ? response.data.collection.products.edges : []
-  return allProducts
+  return response.collectionByHandle
 }
 
 export async function getCollection(handle: string) {
@@ -79,7 +103,7 @@ export async function getCollection(handle: string) {
     }
   `
   const response = await ShopifyData(query)
-  return response.data.collection
+  return response.collection
 }
 
 export async function getAllProducts() {
@@ -107,7 +131,7 @@ export async function getAllProducts() {
   `
 
   const response = await ShopifyData(query)
-  const products = response.data.products ? response.data.products.edges : []
+  const products = response.products ? response.products.edges : []
   return products
 }
 
@@ -167,23 +191,14 @@ export async function getProduct(handle: string) {
   `
 
   const response = await ShopifyData(query)
-  const product = response.data.product ? response.data.product : null
+  const product = response.product ? response.product : null
   return product
 }
 
 export async function createCart(lineItems: { merchandiseId: string; quantity: number }[]) {
-  const lineItemsObject = lineItems.map(item => {
-    return `{
-      merchandiseId: "${item.merchandiseId}",
-      quantity: ${item.quantity}
-    }`
-  })
-
   const query = `
-    mutation {
-      cartCreate(input: {
-        lines: [${lineItemsObject}]
-      }) {
+    mutation cartCreate($input: CartInput!) {
+      cartCreate(input: $input) {
         cart {
           id
           checkoutUrl
@@ -197,93 +212,123 @@ export async function createCart(lineItems: { merchandiseId: string; quantity: n
     }
   `
 
-  const response = await ShopifyData(query)
-
-  if (!response.data.cartCreate) {
-    console.error("Shopify cartCreate response is null:", response)
-    throw new Error("Failed to create cart.")
+  const variables = {
+    input: {
+      lines: lineItems.map(item => ({
+        merchandiseId: item.merchandiseId,
+        quantity: item.quantity,
+      })),
+    },
   }
 
-  if (response.data.cartCreate.userErrors.length > 0) {
-    throw new Error(response.data.cartCreate.userErrors[0].message)
+  const response = await ShopifyData(query, variables)
+
+  if (response.cartCreate.userErrors.length > 0) {
+    throw new Error(response.cartCreate.userErrors[0].message)
   }
 
-  return response.data.cartCreate.cart
+  return response.cartCreate.cart
 }
 
-export async function updateCart(cartId: string, lineItems: { id: string; quantity: number }[]) {
-  const lineItemsObject = lineItems.map(item => {
-    return `{
-      id: "${item.id}",
-      quantity: ${item.quantity}
-    }`
-  })
-
+export async function addCartLines(cartId: string, lines: { merchandiseId: string; quantity: number }[]) {
   const query = `
-    mutation {
-      cartLinesUpdate(cartId: "${cartId}", lines: [${lineItemsObject}]) {
+    mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+      cartLinesAdd(cartId: $cartId, lines: $lines) {
         cart {
           id
           checkoutUrl
-        }
-        userErrors {
-          code
-          field
-          message
-        }
-      }
-    }
-  `
-
-  const response = await ShopifyData(query)
-
-  if (!response.data.cartLinesUpdate) {
-    console.error("Shopify cartLinesUpdate response is null:", response)
-    throw new Error("Failed to update cart.")
-  }
-
-  if (response.data.cartLinesUpdate.userErrors.length > 0) {
-    throw new Error(response.data.cartLinesUpdate.userErrors[0].message)
-  }
-
-  return response.data.cartLinesUpdate.cart
-}
-
-export async function updateFulfillmentStatus(orderId: string, status: string, trackingInfo: any) {
-  // This is a placeholder for the actual mutation
-  // You will need to construct the correct GraphQL mutation based on the Shopify Admin API documentation
-  const query = `
-    mutation {
-      // Example mutation, this will need to be replaced with the correct one
-      fulfillmentCreateV2(
-        fulfillment: {
-          lineItemsByFulfillmentOrder: [
-            {
-              fulfillmentOrderId: "gid://shopify/FulfillmentOrder/${orderId}"
-              fulfillmentOrderLineItems: []
+          lines(first: 100) {
+            nodes {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  image {
+                    url
+                    altText
+                  }
+                }
+              }
             }
-          ]
-          trackingInfo: {
-            number: "${trackingInfo.tracking_number}"
-            url: "${trackingInfo.tracking_url}"
           }
-          notifyCustomer: true
-        }
-      ) {
-        fulfillment {
-          id
-          status
         }
         userErrors {
+          code
           field
           message
         }
       }
     }
-  `;
+  `
 
-  const response = await ShopifyData(query, true); // Use admin API
-  return response;
+  const variables = { cartId, lines }
+  const response = await ShopifyData(query, variables)
+
+  if (response.cartLinesAdd.userErrors.length > 0) {
+    throw new Error(response.cartLinesAdd.userErrors[0].message)
+  }
+
+  return response.cartLinesAdd.cart
+}
+
+export async function removeCartLines(cartId: string, lineIds: string[]) {
+  const query = `
+    mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+      cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+        cart {
+          id
+          checkoutUrl
+        }
+        userErrors {
+          code
+          field
+          message
+        }
+      }
+    }
+  `
+
+  const variables = { cartId, lineIds }
+  const response = await ShopifyData(query, variables)
+
+  if (response.cartLinesRemove.userErrors.length > 0) {
+    throw new Error(response.cartLinesRemove.userErrors[0].message)
+  }
+
+  return response.cartLinesRemove.cart
+}
+
+export async function updateCartLines(cartId: string, lines: { id: string; quantity: number }[]) {
+  const query = `
+    mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+      cartLinesUpdate(cartId: $cartId, lines: $lines) {
+        cart {
+          id
+          checkoutUrl
+        }
+        userErrors {
+          code
+          field
+          message
+        }
+      }
+    }
+  `
+
+  const variables = { cartId, lines }
+  const response = await ShopifyData(query, variables)
+
+  if (response.cartLinesUpdate.userErrors.length > 0) {
+    throw new Error(response.cartLinesUpdate.userErrors[0].message)
+  }
+
+  return response.cartLinesUpdate.cart
 }
 
 export async function searchProducts(query: string) {
@@ -310,6 +355,6 @@ export async function searchProducts(query: string) {
   `;
 
   const response = await ShopifyData(searchQuery);
-  const products = response.data.products ? response.data.products.edges : [];
+  const products = response.products ? response.products.edges : [];
   return products;
 }

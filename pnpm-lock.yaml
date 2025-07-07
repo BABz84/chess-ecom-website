@@ -92,6 +92,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: 1.1.6
         version: 1.1.6(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@shopify/storefront-api-client':
+        specifier: ^1.0.8
+        version: 1.0.8
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.21(postcss@8.5.6)
@@ -1421,6 +1424,12 @@ packages:
 
   '@radix-ui/rect@1.1.0':
     resolution: {integrity: sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==}
+
+  '@shopify/graphql-client@1.4.0':
+    resolution: {integrity: sha512-tyjXkZ/rGK+x3Ep5Y0y0e6q1RbUwv759rsrkzyO7ZDK1cdTc8HP6KcbaNwTNpHO/a0ItbXMFGz5wUIRZqgDMaA==}
+
+  '@shopify/storefront-api-client@1.0.8':
+    resolution: {integrity: sha512-F8llAG9ANQl9HEgsjwhjOik9FcLarPFBe5DrqwbDx+qildHc1jBgWzDlIPvZAeI/fOztcXJrpGopE11S8nkAAA==}
 
   '@sinclair/typebox@0.34.37':
     resolution: {integrity: sha512-2TRuQVgQYfy+EzHRTIvkhv2ADEouJ2xNS/Vq+W5EuuewBdOrvATvljZTxHWZSTYr2sTjTHpGvucaGAt67S2akw==}
@@ -4602,6 +4611,12 @@ snapshots:
       '@types/react-dom': 19.1.6(@types/react@19.1.8)
 
   '@radix-ui/rect@1.1.0': {}
+
+  '@shopify/graphql-client@1.4.0': {}
+
+  '@shopify/storefront-api-client@1.0.8':
+    dependencies:
+      '@shopify/graphql-client': 1.4.0
 
   '@sinclair/typebox@0.34.37': {}
 

@@ -1,8 +1,11 @@
 import ProductCard from "./product-card"
-import { getProductsInCollection } from "@/lib/shopify"
+import { fetchCollection } from "@/lib/shopify"
+import { Product } from "@/lib/types"
 
 export default async function FeaturedProducts({ collectionHandle }: { collectionHandle: string }) {
-  const products = await getProductsInCollection(collectionHandle)
+  const collection = await fetchCollection(collectionHandle)
+  if (!collection) return null
+  const products = collection.products.nodes
 
   return (
     <section className="py-16 lg:py-24">
@@ -10,14 +13,14 @@ export default async function FeaturedProducts({ collectionHandle }: { collectio
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold mb-4">Featured Stories</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Each piece in our collection tells a powerful story of courage, innovation, and triumph. Discover the{" "}
+            Discover the{" "}
             <strong>how</strong>, <strong>when</strong>, and <strong>why</strong> behind these remarkable figures.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product: any) => (
-            <ProductCard key={product.node.id} product={product.node} />
+          {products.map((product: Product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
 

@@ -1,10 +1,13 @@
 import ProductCard from "./product-card"
 import { Button } from "@/components/ui/button"
 import { Shirt } from "lucide-react"
-import { getProductsInCollection } from "@/lib/shopify"
+import { fetchCollection } from "@/lib/shopify"
+import { Product } from "@/lib/types"
 
 export default async function PrintifyShowcase({ collectionHandle }: { collectionHandle: string }) {
-  const products = await getProductsInCollection(collectionHandle)
+  const collection = await fetchCollection(collectionHandle)
+  if (!collection) return null
+  const products = collection.products.nodes
 
   return (
     <section className="py-16 lg:py-24">
@@ -20,8 +23,8 @@ export default async function PrintifyShowcase({ collectionHandle }: { collectio
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product: any) => (
-            <ProductCard key={product.node.id} product={product.node} />
+          {products.map((product: Product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
 
