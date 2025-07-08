@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useCart } from "@/components/cart-provider"
 import { useState } from "react"
 import { Product, ProductVariant } from "@/lib/types"
+import DOMPurify from 'dompurify';
 
 export default function ProductDetail({ product }: { product: Product }) {
   const { addItem } = useCart()
@@ -63,7 +64,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
           <div
             className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: product.descriptionHtml || product.description }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.descriptionHtml || product.description) }}
           />
           <Button
             size="lg"

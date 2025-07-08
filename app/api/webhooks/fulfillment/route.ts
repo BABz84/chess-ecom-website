@@ -44,9 +44,15 @@ export async function POST(request: Request) {
 
 
   } else if (gelatoSignature) {
-    // --- Gelato Webhook Handling (Placeholder) ---
-    // This section requires the official Gelato webhook documentation to implement correctly.
-    // The current implementation is a placeholder and will not work.
+    // --- Gelato Webhook Handling (SECURITY PATCH) ---
+    // The original implementation was insecure and has been disabled.
+    // DO NOT enable this endpoint without implementing proper cryptographic signature verification (e.g., HMAC-SHA256)
+    // as per the official Gelato developer documentation.
+    console.error("Attempted to use the insecure Gelato webhook. The endpoint is disabled for security reasons.");
+    return NextResponse.json({ error: "Endpoint disabled due to security vulnerability." }, { status: 503 });
+    
+    /*
+    // --- Original Insecure Code (Placeholder) ---
     if (!GELATO_WEBHOOK_SECRET) {
       console.error("Gelato webhook secret is not configured.");
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -63,6 +69,7 @@ export async function POST(request: Request) {
     // Data extraction and Shopify update logic needs to be implemented
     // const { orderId, newStatus, tracking } = body;
     // await updateFulfillmentStatus(orderId, newStatus, tracking);
+    */
 
   } else {
     console.warn("Received a webhook from an unknown source.");

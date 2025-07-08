@@ -94,15 +94,16 @@ export async function fetchCollection(handle: string) {
 
 export async function getCollection(handle: string) {
   const query = `
-    {
-      collection(handle: "${handle}") {
+    query getCollection($handle: String!) {
+      collection(handle: $handle) {
         id
         title
         description
       }
     }
   `
-  const response = await ShopifyData(query)
+  const variables = { handle };
+  const response = await ShopifyData(query, variables)
   return response.collection
 }
 
@@ -137,8 +138,8 @@ export async function getAllProducts() {
 
 export async function getProduct(handle: string) {
   const query = `
-    {
-      product(handle: "${handle}") {
+    query getProduct($handle: String!) {
+      product(handle: $handle) {
         id
         title
         handle
@@ -189,8 +190,8 @@ export async function getProduct(handle: string) {
       }
     }
   `
-
-  const response = await ShopifyData(query)
+  const variables = { handle };
+  const response = await ShopifyData(query, variables)
   const product = response.product ? response.product : null
   return product
 }
@@ -331,10 +332,10 @@ export async function updateCartLines(cartId: string, lines: { id: string; quant
   return response.cartLinesUpdate.cart
 }
 
-export async function searchProducts(query: string) {
-  const searchQuery = `
-    {
-      products(first: 10, query: "title:${query}* OR product_type:${query}* OR vendor:${query}* OR tag:${query}*") {
+export async function searchProducts(searchTerm: string) {
+  const query = `
+    query searchProducts($searchTerm: String!) {
+      products(first: 10, query: $searchTerm) {
         edges {
           node {
             id
@@ -353,8 +354,15 @@ export async function searchProducts(query: string) {
       }
     }
   `;
-
-  const response = await ShopifyData(searchQuery);
+  const variables = { searchTerm: `title:${searchTerm}* OR product_type:${searchTerm}* OR vendor:${searchTerm}* OR tag:${searchTerm}*` };
+  const response = await ShopifyData(query, variables);
   const products = response.products ? response.products.edges : [];
   return products;
+}
+
+export async function updateFulfillmentStatus(orderId: string, status: string, trackingInfo: { tracking_number: string; tracking_url: string; carrier: string; }) {
+  // This is a placeholder function. In a real-world scenario, you would use the Shopify Admin API
+  // to update the fulfillment status of an order. This would require a separate client and authentication.
+  console.log(`Updating fulfillment for order ${orderId} to ${status} with tracking:`, trackingInfo);
+  return { success: true };
 }
