@@ -3,14 +3,22 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/components/cart-provider"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Product, ProductVariant } from "@/lib/types"
-import DOMPurify from 'dompurify';
 
 export default function ProductDetail({ product }: { product: Product }) {
   const { addItem } = useCart()
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(product.variants.nodes[0])
   const [displayedImage, setDisplayedImage] = useState(selectedVariant?.image?.url || product.images.nodes[0]?.url || "/placeholder.jpg")
+  const [sanitizedHtml, setSanitizedHtml] = useState('');
+
+  useEffect(() => {
+    const sanitizeHtml = async () => {
+      const DOMPurify = (await import('dompurify')).default;
+      setSanitizedHtml(DOMPurify.sanitize(product.descriptionHtml || product.description));
+    };
+    sanitizeHtml();
+  }, [product.descriptionHtml, product.description]);
 
   const handleVariantChange = (variant: ProductVariant) => {
     setSelectedVariant(variant);
@@ -64,12 +72,12 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
           <div
             className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.descriptionHtml || product.description) }}
+            dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
           <Button
             size="lg"
             className="w-full mt-8 bg-red-600 hover:bg-red-700"
-            onClick={() => addItem({ id: selectedVariant.id, title: product.title, price: parseFloat(selectedVariant.price.amount), image: displayedImage, merchandiseId: selectedVariant.id })}
+            onClick={() => addItem({ id: selectedVariant.id, title: product.title, price: parseFloat(selectedVariant.price.amount), image: displayedImage, merchandiseId: selectedVariant.id, lineId: '' })}
           >
             Add to Cart
           </Button>

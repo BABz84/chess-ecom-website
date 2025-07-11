@@ -25,21 +25,22 @@ const shipmentDetailsSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const validation = shipmentDetailsSchema.safeParse(body);
+  // try {
+  //   const body = await request.json();
+  //   const validation = shipmentDetailsSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json({ error: "Invalid input", details: validation.error.flatten() }, { status: 400 });
-    }
+  //   if (!validation.success) {
+  //     return NextResponse.json({ error: "Invalid input", details: validation.error.flatten() }, { status: 400 });
+  //   }
 
-    const rates = await getShippingRates(validation.data);
-    return NextResponse.json(rates);
-  } catch (error) {
-    console.error("Error fetching shipping rates:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch shipping rates" },
-      { status: 500 }
-    );
-  }
+  //   const rates = await getShippingRates(validation.data);
+  //   return NextResponse.json(rates);
+  // } catch (error) {
+  //   console.error("Error fetching shipping rates:", error);
+  //   return NextResponse.json(
+  //     { error: "Failed to fetch shipping rates" },
+  //     { status: 500 }
+  //   );
+  // }
+  return NextResponse.json({ message: "Shipping route is temporarily disabled." });
 }

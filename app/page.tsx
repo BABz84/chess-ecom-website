@@ -1,23 +1,20 @@
 import { Suspense } from "react"
-import HeroSection from "@/components/hero-section"
-import { fetchCollection } from "@/lib/shopify"
+import HeroSectionLoader from "@/components/hero-section-loader"
 import FeaturedProducts from "@/components/featured-products"
 import AboutSection from "@/components/about-section"
-import ChessPiecesShowcase from "@/components/chess-pieces-showcase"
 import WhoWeAreSection from "@/components/who-we-are-section"
 import GelatoShowcase from "@/components/gelato-showcase"
 import PrintifyShowcase from "@/components/printify-showcase"
 import FreeResources from "@/components/free-resources"
 import { ProductCardSkeleton } from "@/components/product-card"
 
-export default async function HomePage() {
-  const heroCarouselCollection = await fetchCollection("hero-carousel")
-  const heroProducts = heroCarouselCollection ? heroCarouselCollection.products.nodes : []
-
+export default function HomePage() {
   return (
     <main>
       {/* Hero - explains what you can buy */}
-      <HeroSection heroProducts={heroProducts} />
+      <Suspense fallback={<div className="h-[600px] w-full bg-gray-200 animate-pulse" />}>
+        <HeroSectionLoader />
+      </Suspense>
 
       {/* Product Section 1 - Featured Products */}
       <Suspense fallback={<ProductCardSkeleton />}>

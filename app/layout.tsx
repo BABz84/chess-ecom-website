@@ -6,7 +6,6 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { CartProvider } from "@/components/cart-provider"
 import { SearchProvider } from "@/components/search-provider"
-import { getAllProducts } from "@/lib/shopify"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -25,17 +24,15 @@ export const metadata: Metadata = {
     generator: 'v0.dev'
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const allProducts = await getAllProducts();
-  console.log("All products in layout:", JSON.stringify(allProducts, null, 2));
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SearchProvider allProducts={allProducts}>
+        <SearchProvider>
           <CartProvider>
             <Header />
             {children}

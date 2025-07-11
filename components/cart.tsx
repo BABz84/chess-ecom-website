@@ -34,42 +34,48 @@ export default function Cart() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Shopping Cart</SheetTitle>
+          <SheetTitle>Shopping Cart ({totalItems})</SheetTitle>
         </SheetHeader>
-        <div className="mt-8">
+        <div className="flex flex-col h-full">
           {items.length === 0 ? (
-            <p>Your cart is empty.</p>
+            <div className="flex-grow flex items-center justify-center">
+              <p>Your cart is empty.</p>
+            </div>
           ) : (
-            <div className="space-y-4">
-              {items.map((item) => (
-                <div key={item.id} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <Image
-                      src={item.image || "/placeholder.svg"}
-                      alt={item.title}
-                      width={64}
-                      height={64}
-                      className="rounded-md"
-                    />
-                    <div>
-                      <h3 className="font-semibold">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
+            <>
+              <div className="flex-grow overflow-y-auto pr-4 -mr-4">
+                <div className="space-y-4">
+                  {items.map((item) => (
+                    <div key={item.id} className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3">
+                        <Image
+                          src={item.image || "/placeholder.svg"}
+                          alt={item.title}
+                          width={48}
+                          height={48}
+                          className="rounded-md"
+                        />
+                        <div className="flex-grow">
+                          <h3 className="font-semibold text-sm leading-tight">{item.title}</h3>
+                          <p className="text-xs text-muted-foreground">${item.price.toFixed(2)}</p>
+                          <div className="flex items-center space-x-2 mt-2">
+                            <Button variant="outline" size="sm" className="h-6 w-6 p-0" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                              -
+                            </Button>
+                            <span className="text-sm">{item.quantity}</span>
+                            <Button variant="outline" size="sm" className="h-6 w-6 p-0" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                              +
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => removeItem(item.id)}>
+                        &times;
+                      </Button>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
-                      -
-                    </Button>
-                    <span>{item.quantity}</span>
-                    <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-                      +
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)}>
-                      &times;
-                    </Button>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </div>
               <div className="pt-4 border-t">
                 <div className="flex justify-between font-semibold">
                   <span>Subtotal</span>
@@ -79,7 +85,7 @@ export default function Cart() {
                   Proceed to Checkout
                 </Button>
               </div>
-            </div>
+            </>
           )}
         </div>
       </SheetContent>

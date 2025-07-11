@@ -203,6 +203,16 @@ export async function createCart(lineItems: { merchandiseId: string; quantity: n
         cart {
           id
           checkoutUrl
+          lines(first: 100) {
+            nodes {
+              id
+              merchandise {
+                ... on ProductVariant {
+                  id
+                }
+              }
+            }
+          }
         }
         userErrors {
           code

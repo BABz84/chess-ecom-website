@@ -12,6 +12,7 @@ async function getProducts() {
     {
       id: "1",
       title: "Placeholder Product Title",
+      handle: "placeholder-product-1",
       price: 99.99,
       compareAtPrice: 129.99,
       image: "/placeholder.svg?height=400&width=400",
@@ -22,6 +23,7 @@ async function getProducts() {
     {
       id: "2",
       title: "Placeholder Product Title",
+      handle: "placeholder-product-2",
       price: 99.99,
       image: "/placeholder.svg?height=400&width=400",
       rating: 4.8,
@@ -31,6 +33,7 @@ async function getProducts() {
     {
       id: "3",
       title: "Placeholder Product Title",
+      handle: "placeholder-product-3",
       price: 99.99,
       image: "/placeholder.svg?height=400&width=400",
       rating: 4.7,
@@ -40,6 +43,7 @@ async function getProducts() {
     {
       id: "4",
       title: "Placeholder Product Title",
+      handle: "placeholder-product-4",
       price: 99.99,
       image: "/placeholder.svg?height=400&width=400",
       rating: 5.0,
@@ -49,6 +53,7 @@ async function getProducts() {
     {
       id: "5",
       title: "Placeholder Product Title",
+      handle: "placeholder-product-5",
       price: 99.99,
       image: "/placeholder.svg?height=400&width=400",
       rating: 4.6,
@@ -58,6 +63,7 @@ async function getProducts() {
     {
       id: "6",
       title: "Placeholder Product Title",
+      handle: "placeholder-product-6",
       price: 99.99,
       image: "/placeholder.svg?height=400&width=400",
       rating: 4.8,

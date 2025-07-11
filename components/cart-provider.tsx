@@ -4,12 +4,13 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from "
 import { createCart, addCartLines, removeCartLines, updateCartLines } from "@/lib/shopify"
 
 interface CartItem {
-  id: string
-  title: string
-  price: number
-  quantity: number
-  image: string
-  merchandiseId: string
+  id: string;
+  title: string;
+  price: number;
+  quantity: number;
+  image: string;
+  merchandiseId: string;
+  lineId: string;
 }
 
 interface CartContextType {
@@ -48,44 +49,60 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, cartId, checkoutUrl])
 
-  const addItem = async (newItem: Omit<CartItem, "quantity">) => {
-    let newCartId = cartId
-    if (!newCartId) {
-      const cart = await createCart([{ merchandiseId: newItem.merchandiseId, quantity: 1 }])
-      newCartId = cart.id
-      setCartId(cart.id)
-      setCheckoutUrl(cart.checkoutUrl)
-    } else {
-      await addCartLines(newCartId, [{ merchandiseId: newItem.merchandiseId, quantity: 1 }])
+  const addItem = async (newItem: Omit<CartItem, "quantity" | "lineId">) => {
+    const existingItem = items.find((item) => item.id === newItem.id);
+    if (existingItem) {
+      updateQuantity(existingItem.id, existingItem.quantity + 1);
+      return;
     }
 
-    setItems((prev) => {
-      const existingItem = prev.find((item) => item.id === newItem.id)
-      if (existingItem) {
-        return prev.map((item) => (item.id === newItem.id ? { ...item, quantity: item.quantity + 1 } : item))
-      }
-      return [...prev, { ...newItem, quantity: 1 }]
-    })
-  }
+    let newCartId = cartId;
+    let newCheckoutUrl = checkoutUrl;
+    let cart;
+
+    if (!newCartId) {
+      cart = await createCart([{ merchandiseId: newItem.merchandiseId, quantity: 1 }]);
+      newCartId = cart.id;
+      newCheckoutUrl = cart.checkoutUrl;
+      setCartId(newCartId);
+      setCheckoutUrl(newCheckoutUrl);
+    } else {
+      cart = await addCartLines(newCartId, [{ merchandiseId: newItem.merchandiseId, quantity: 1 }]);
+    }
+
+    const newLine = cart.lines.nodes.find(
+      (line: any) => line.merchandise.id === newItem.merchandiseId
+    );
+
+    if (newLine) {
+        setItems((prev) => {
+            return [...prev, { ...newItem, quantity: 1, lineId: newLine.id }];
+        });
+    }
+  };
 
   const removeItem = async (id: string) => {
-    if (cartId) {
-      await removeCartLines(cartId, [id])
-      setItems((prev) => prev.filter((item) => item.id !== id))
+    const itemToRemove = items.find((item) => item.id === id);
+    if (cartId && itemToRemove) {
+      await removeCartLines(cartId, [itemToRemove.lineId]);
+      setItems((prev) => prev.filter((item) => item.id !== id));
     }
-  }
+  };
 
   const updateQuantity = async (id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(id)
-      return
+      removeItem(id);
+      return;
     }
 
-    if (cartId) {
-      await updateCartLines(cartId, [{ id, quantity }])
-      setItems((prev) => prev.map((item) => (item.id === id ? { ...item, quantity } : item)))
+    const itemToUpdate = items.find((item) => item.id === id);
+    if (cartId && itemToUpdate) {
+      await updateCartLines(cartId, [{ id: itemToUpdate.lineId, quantity }]);
+      setItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      );
     }
-  }
+  };
 
   const clearCart = () => {
     setItems([])

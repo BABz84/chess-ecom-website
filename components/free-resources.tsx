@@ -64,10 +64,31 @@ const resources = [
   },
   {
     id: 9,
+    title: "Chess.com Learn",
+    image: "/images/resources/chess-com.png",
+    url: "https://www.chess.com/learn",
+    description: "Learn to play chess with lessons, puzzles, and drills from the world's most popular chess platform.",
+  },
+  {
+    id: 10,
+    title: "ChessBase Learn",
+    image: "/images/resources/chessbase.png",
+    url: "https://learn.chessbase.com/en",
+    description: "Interactive lessons and training from one of the leading names in chess software.",
+  },
+  {
+    id: 11,
     title: "US Chess Federation",
-    image: "/images/resources/resource-9.jpg",
+    image: "/images/resources/uschess.png",
     url: "https://new.uschess.org/",
     description: "The official site of the US Chess Federation, with information on tournaments, ratings, and news.",
+  },
+  {
+    id: 12,
+    title: "FIDE - International Chess Federation",
+    image: "/images/resources/fide.png",
+    url: "https://www.fide.com/",
+    description: "The official website of the International Chess Federation, the governing body of international chess competition.",
   },
 ]
 
@@ -85,7 +106,7 @@ export default function FreeResources() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {resources.map((resource) => (
             <Card
               key={resource.id}

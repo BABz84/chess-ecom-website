@@ -21,10 +21,10 @@ export default function Footer() {
               stories of how, when, and why these remarkable figures shaped our world.
             </p>
             <div className="flex space-x-4">
-              <Link href="#" className="text-red-100 hover:text-white transition-colors">
+              <Link href="https://www.facebook.com/profile.php?id=61578028686626" className="text-red-100 hover:text-white transition-colors">
                 <Facebook className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-red-100 hover:text-white transition-colors">
+              <Link href="https://www.instagram.com/grandpuba2020/" className="text-red-100 hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
               </Link>
               <Link href="#" className="text-red-100 hover:text-white transition-colors">
@@ -86,7 +86,7 @@ export default function Footer() {
             <div className="space-y-3 text-sm">
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-red-300" />
-                <a href="mailto:stories@mansagallery.com" className="text-red-100 hover:text-white transition-colors">stories@mansagallery.com</a>
+                <a href="mailto:info@mansagallery.com" className="text-red-100 hover:text-white transition-colors">info@mansagallery.com</a>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-red-300" />
