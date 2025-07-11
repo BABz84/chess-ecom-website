@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Search, Menu, Facebook, Instagram, Twitter } from "lucide-react"
+import { Search, Menu, Facebook, Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -27,9 +27,6 @@ export default function Header() {
               </Link>
               <Link href="https://www.instagram.com/grandpuba2020/" className="text-gray-500 hover:text-red-600 transition-colors p-1">
                 <Instagram className="h-4 w-4" />
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-red-600 transition-colors p-1">
-                <Twitter className="h-4 w-4" />
               </Link>
             </div>
           </div>

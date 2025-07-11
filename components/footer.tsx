@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from "lucide-react"
+import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react"
 import Image from "next/image"
 
 export default function Footer() {
@@ -26,9 +26,6 @@ export default function Footer() {
               </Link>
               <Link href="https://www.instagram.com/grandpuba2020/" className="text-red-100 hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-red-100 hover:text-white transition-colors">
-                <Twitter className="h-5 w-5" />
               </Link>
               <Link href="#" className="text-red-100 hover:text-white transition-colors">
                 <Youtube className="h-5 w-5" />
