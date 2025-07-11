@@ -5,8 +5,9 @@ import ProductCard from '@/components/product-card';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Page({ params }: { params: { handle: string } }) {
-  const collection = await fetchCollection(params.handle);
+export default async function Page({ params }: { params: Promise<{ handle: string }> }) {
+  const { handle } = await params;
+  const collection = await fetchCollection(handle);
   if (!collection) return notFound();
 
   return (

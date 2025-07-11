@@ -3,8 +3,9 @@ import ProductDetail from "@/components/product-detail"
 import { notFound } from "next/navigation"
 import type { Metadata } from 'next'
 
-export async function generateMetadata({ params }: { params: { handle: string } }): Promise<Metadata> {
-  const product = await getProduct(params.handle)
+export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
+  const { handle } = await params;
+  const product = await getProduct(handle)
 
   if (!product) {
     return {
@@ -33,9 +34,10 @@ export async function generateMetadata({ params }: { params: { handle: string } 
 export default async function ProductPage({
   params,
 }: {
-  params: { handle: string }
+  params: Promise<{ handle: string }>
 }) {
-  const product = await getProduct(params.handle)
+  const { handle } = await params;
+  const product = await getProduct(handle)
 
   if (!product) {
     notFound()
