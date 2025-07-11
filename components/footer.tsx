@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <Image
-              src="/images/mansa-gallery-logo-new.png"
+              src="/images/mansa-gallery-logo-bordered.png"
               alt="Mansa Gallery Logo"
               width={120}
               height={40}
@@ -95,9 +95,9 @@ export default function Footer() {
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 text-red-300 mt-0.5" />
                 <span className="text-red-100">
-                  123 Legacy Lane
+                  312 Crosstown Rd. Suite 167
                   <br />
-                  Historyville, USA 12345
+                  Peachtree City, GA 30269
                 </span>
               </div>
             </div>
