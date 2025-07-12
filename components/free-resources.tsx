@@ -72,7 +72,7 @@ const resources = [
   {
     id: 10,
     title: "ChessBase Learn",
-    image: "/images/resources/ChessBase Learn.png",
+    image: "/images/resources/ChessBase-Learn.png",
     url: "https://learn.chessbase.com/en",
     description: "Interactive lessons and training from one of the leading names in chess software.",
   },
