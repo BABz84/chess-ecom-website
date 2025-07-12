@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getShippingRates } from "@/lib/pirate-ship";
 import { z } from "zod";
 
+export const runtime = 'edge';
+
 const addressSchema = z.object({
   street1: z.string(),
   street2: z.string().optional(),

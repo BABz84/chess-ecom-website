@@ -3,6 +3,8 @@ import ProductDetail from "@/components/product-detail"
 import { notFound } from "next/navigation"
 import type { Metadata } from 'next'
 
+export const runtime = 'edge';
+
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params;
   const product = await getProduct(handle)

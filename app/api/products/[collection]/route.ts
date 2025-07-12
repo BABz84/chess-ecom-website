@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { fetchCollection } from "@/lib/shopify"
 
+export const runtime = 'edge';
+
 export async function GET(request: Request, props: { params: Promise<{ collection: string }> }) {
   const params = await props.params;
   try {

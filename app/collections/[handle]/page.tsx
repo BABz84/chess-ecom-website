@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Product } from '@/lib/types';
 import ProductCard from '@/components/product-card';
 
-export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
 export default async function Page({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
