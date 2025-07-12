@@ -42,12 +42,11 @@ export default function AboutSection() {
             </div>
             <div className="text-right">
               <div className="relative inline-block">
-                <Image
-                  src="/images/Mr. Duane Stewart.png"
-                  alt="Mr. Duane Stewart"
-                  width={500}
-                  height={500}
-                  className="rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105"
+                <video
+                  src="https://pub-128839488dd240b491fd5f21a293b7d8.r2.dev/DW_final.mp4"
+                  poster="https://pub-128839488dd240b491fd5f21a293b7d8.r2.dev/Mr.webp"
+                  controls
+                  className="rounded-lg shadow-lg w-full"
                 />
               </div>
               <div className="mt-4">
