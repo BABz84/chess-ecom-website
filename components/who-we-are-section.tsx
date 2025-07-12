@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { BookOpen, Globe, Award, Crown } from "lucide-react"
 import { fetchCollection } from "@/lib/shopify"
 import { Product } from "@/lib/types"
@@ -15,11 +16,15 @@ export default async function WhoWeAreSection() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-slate-800">
-              Who We Are: Restoring the Legacy of Forgotten Heroes
+              The Legacy Chess Set
             </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Each piece represents a forgotten hero whose story deserves to be told. Premium handcrafted chess pieces
+              that bring history to life on your board.
+            </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-6">
               <div className="prose prose-lg text-slate-700">
                 <p>
@@ -81,39 +86,16 @@ export default async function WhoWeAreSection() {
                 </p>
               </div>
 
-              <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-600">
-                <blockquote className="text-slate-700 italic">
-                  "This is not just a game. It is a movement to honor the forgotten heroes who deserve recognition."
-                </blockquote>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {products.slice(0, 2).map((product: Product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
               </div>
 
-              <Button className="btn-red w-full sm:w-auto">Discover The Legacy Chess Set</Button>
+              <Link href="http://localhost:3003/collections/chess-pieces" className="btn-red w-full sm:w-auto mt-6 inline-block text-center">Discover The Legacy Chess Set</Link>
             </div>
           </div>
 
-          <div className="text-center mt-16">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <Crown className="h-8 w-8 text-red-600" />
-              <h2 className="text-3xl lg:text-4xl font-bold">The Legacy Chess Set</h2>
-            </div>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Each piece represents a forgotten hero whose story deserves to be told. Premium handcrafted chess pieces
-              that bring history to life on your board.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-            {products.map((product: Product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-
-          <div className="text-center mt-12 space-y-4">
-            <p className="text-slate-600">Complete your collection with all 32 historically significant pieces</p>
-            <Button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
-              Shop Complete Chess Set
-            </Button>
-          </div>
         </div>
       </div>
     </section>
