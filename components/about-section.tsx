@@ -3,7 +3,7 @@ import Image from "next/image"
 
 export default function AboutSection() {
   return (
-    <section className="py-16 lg:py-24 bg-slate-50">
+    <section id="about-us" className="py-16 lg:py-24 bg-slate-50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl lg:text-4xl font-bold mb-12 text-slate-800 text-center">About Mansa Gallery</h2>

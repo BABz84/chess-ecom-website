@@ -4,3 +4,4 @@ compatibility_date = "2024-07-11"
 
 [pages]
 compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".next"

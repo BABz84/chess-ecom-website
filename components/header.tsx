@@ -67,7 +67,7 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Link href="/about" className="text-base font-medium text-slate-700 hover:text-red-600 transition-colors">
+              <Link href="/#about-us" className="text-base font-medium text-slate-700 hover:text-red-600 transition-colors">
                 About
               </Link>
 
@@ -121,7 +121,7 @@ export default function Header() {
                     >
                       POD Items
                     </Link>
-                    <Link href="/about" className="text-xl font-medium hover:text-red-600 transition-colors">
+                    <Link href="/#about-us" className="text-xl font-medium hover:text-red-600 transition-colors">
                       About
                     </Link>
                     <Link href="/contact" className="text-xl font-medium hover:text-red-600 transition-colors">

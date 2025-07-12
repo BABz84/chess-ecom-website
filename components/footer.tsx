@@ -14,7 +14,7 @@ export default function Footer() {
               alt="Mansa Gallery Logo"
               width={120}
               height={40}
-              className="brightness-0 invert"
+              
             />
             <p className="text-red-100 text-sm">
               Mansa Gallery celebrates Black history and African heritage through curated collections that tell the
@@ -26,9 +26,6 @@ export default function Footer() {
               </Link>
               <Link href="https://www.instagram.com/grandpuba2020/" className="text-red-100 hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-red-100 hover:text-white transition-colors">
-                <Youtube className="h-5 w-5" />
               </Link>
             </div>
           </div>
@@ -43,13 +40,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/products/gelato" className="text-red-100 hover:text-white transition-colors">
-                  Gelato Art Collection
+                <Link href="/collections/pod-prints" className="text-red-100 hover:text-white transition-colors">
+                  Print on Demand Art Collection
                 </Link>
               </li>
               <li>
-                <Link href="/products/printify" className="text-red-100 hover:text-white transition-colors">
-                  Printify Heritage Collection
+                <Link href="/collections/pod-items" className="text-red-100 hover:text-white transition-colors">
+                  Print on Demand Items Collection
                 </Link>
               </li>
               <li>
@@ -65,14 +62,14 @@ export default function Footer() {
             <h3 className="font-semibold text-lg">Learn More</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/about" className="text-red-100 hover:text-white transition-colors">
+                <Link href="/#about-us" className="text-red-100 hover:text-white transition-colors">
                   About Mansa Gallery
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-red-100 hover:text-white transition-colors">
+                <a href="mailto:info@mansagallery.com" className="text-red-100 hover:text-white transition-colors">
                   Contact Us
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -84,10 +81,6 @@ export default function Footer() {
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-red-300" />
                 <a href="mailto:info@mansagallery.com" className="text-red-100 hover:text-white transition-colors">info@mansagallery.com</a>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="h-4 w-4 text-red-300" />
-                <a href="tel:+15550000000" className="text-red-100 hover:text-white transition-colors">+1 (555) 000-0000</a>
               </div>
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 text-red-300 mt-0.5" />
@@ -112,9 +105,7 @@ export default function Footer() {
             <Link href="/terms" className="text-red-100 hover:text-white transition-colors">
               Terms of Service
             </Link>
-            <Link href="/shipping" className="text-red-100 hover:text-white transition-colors">
-              Shipping Info
-            </Link>
+            
           </div>
         </div>
       </div>
