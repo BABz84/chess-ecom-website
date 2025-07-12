@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
 import { fetchCollection } from "@/lib/shopify"
 
-export async function GET(request: Request, { params }: { params: { collection: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { collection: string } }
+) {
   try {
     const products = await fetchCollection(params.collection)
     return NextResponse.json(products)
