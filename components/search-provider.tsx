@@ -5,15 +5,15 @@ import { Product } from "@/lib/types";
 import { getAllProducts } from "@/lib/shopify";
 
 interface SearchContextType {
-  products: Product[];
-  search: (query: string) => Product[];
+  products: { node: Product }[];
+  search: (query: string) => { node: Product }[];
   loading: boolean;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 export function SearchProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<{ node: Product }[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,13 +33,14 @@ export function SearchProvider({ children }: { children: ReactNode }) {
 
   const search = (query: string) => {
     if (!query) return [];
-    console.log("Searching for:", query);
     const lowerCaseQuery = query.toLowerCase();
-    const results = products.filter((product) =>
-      (product.title && product.title.toLowerCase().includes(lowerCaseQuery)) ||
-      (product.description && product.description.toLowerCase().includes(lowerCaseQuery))
-    );
-    console.log("Search results:", results);
+    const results = products.filter((edge: { node: Product }) => {
+      const product = edge.node;
+      return (
+        (product.title && product.title.toLowerCase().includes(lowerCaseQuery)) ||
+        (product.description && product.description.toLowerCase().includes(lowerCaseQuery))
+      );
+    });
     return results;
   };
 
