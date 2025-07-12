@@ -1,51 +1,32 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode, useCallback } from "react";
 import { Product } from "@/lib/types";
-import { getAllProducts } from "@/lib/shopify";
 
 interface SearchContextType {
-  products: { node: Product }[];
-  search: (query: string) => { node: Product }[];
-  loading: boolean;
+  search: (query: string) => Promise<Product[]>;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 export function SearchProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<{ node: Product }[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const allProducts = await getAllProducts();
-        setProducts(allProducts);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      } finally {
-        setLoading(false);
+  const search = useCallback(async (query: string) => {
+    if (query.length < 2) return [];
+    try {
+      const response = await fetch(`/api/products/search?query=${encodeURIComponent(query)}`);
+      if (!response.ok) {
+        throw new Error("Search request failed");
       }
-    };
-
-    fetchProducts();
+      const { products } = await response.json();
+      return products.map((edge: { node: Product }) => edge.node);
+    } catch (error) {
+      console.error("Failed to fetch search results:", error);
+      return [];
+    }
   }, []);
 
-  const search = (query: string) => {
-    if (!query) return [];
-    const lowerCaseQuery = query.toLowerCase();
-    const results = products.filter((edge: { node: Product }) => {
-      const product = edge.node;
-      return (
-        (product.title && product.title.toLowerCase().includes(lowerCaseQuery)) ||
-        (product.description && product.description.toLowerCase().includes(lowerCaseQuery))
-      );
-    });
-    return results;
-  };
-
   return (
-    <SearchContext.Provider value={{ products, search, loading }}>
+    <SearchContext.Provider value={{ search }}>
       {children}
     </SearchContext.Provider>
   );

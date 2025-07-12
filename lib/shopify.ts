@@ -347,6 +347,10 @@ export async function searchProducts(searchTerm: string) {
             id
             title
             handle
+            featuredImage {
+              url
+              altText
+            }
             images(first: 1) {
               edges {
                 node {

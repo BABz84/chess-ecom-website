@@ -1,18 +1,38 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useSearch } from "./search-provider";
+import { Product } from "@/lib/types";
+import { debounce } from "lodash";
 
 export default function ProductSearch() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const { search } = useSearch();
+
+  const debouncedSearch = useCallback(
+    debounce(async (searchQuery: string) => {
+      if (searchQuery.length < 2) {
+        setResults([]);
+        setIsOpen(false);
+        return;
+      }
+      const searchResults = await search(searchQuery);
+      setResults(searchResults);
+      setIsOpen(true);
+    }, 300),
+    [search]
+  );
+
+  useEffect(() => {
+    debouncedSearch(query);
+  }, [query, debouncedSearch]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -26,18 +46,6 @@ export default function ProductSearch() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  useEffect(() => {
-    if (query.length < 2) {
-      setResults([]);
-      setIsOpen(false);
-      return;
-    }
-
-    const searchResults = search(query);
-    setResults(searchResults);
-    setIsOpen(true);
-  }, [query, search]);
 
   return (
     <div className="relative" ref={searchRef}>
@@ -55,12 +63,12 @@ export default function ProductSearch() {
       {isOpen && results.length > 0 && (
         <div className="absolute top-full mt-2 w-full md:w-[500px] bg-white border rounded-lg shadow-lg z-10">
           <ul>
-            {results.map(({ node: product }) => (
+            {results.map((product) => (
               <li key={product.id}>
                 <Link href={`/products/${product.handle}`} className="flex items-center p-4 hover:bg-gray-100">
                   <Image
-                    src={product.images.edges[0]?.node.originalSrc || "/placeholder.svg"}
-                    alt={product.images.edges[0]?.node.altText || product.title}
+                    src={product.featuredImage?.url || "/placeholder.svg"}
+                    alt={product.featuredImage?.altText || product.title}
                     width={40}
                     height={40}
                     className="rounded-md mr-4"

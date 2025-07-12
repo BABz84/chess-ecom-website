@@ -92,10 +92,9 @@ export default async function WhoWeAreSection() {
                 ))}
               </div>
 
-              <Link href="http://localhost:3003/collections/chess-pieces" className="btn-red w-full sm:w-auto mt-6 inline-block text-center">Discover The Legacy Chess Set</Link>
+              <Link href="/collections/chess-pieces" className="btn-red w-full sm:w-auto mt-6 inline-block text-center">Discover The Legacy Chess Set</Link>
             </div>
           </div>
-
         </div>
       </div>
     </section>
