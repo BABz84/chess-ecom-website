@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import crypto from "crypto";
 import { updateFulfillmentStatus } from "@/lib/shopify";
 
-export const runtime = 'edge';
 
 // It's crucial to store these secrets in environment variables
 const PRINTIFY_WEBHOOK_SECRET = process.env.PRINTIFY_WEBHOOK_SECRET;
