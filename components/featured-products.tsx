@@ -1,4 +1,5 @@
 import ProductCard from "./product-card"
+import Link from "next/link"
 import { fetchCollection } from "@/lib/shopify"
 import { Product } from "@/lib/types"
 
@@ -25,9 +26,9 @@ export default async function FeaturedProducts({ collectionHandle }: { collectio
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+          <Link href="/collections/all" className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
             Explore All Stories
-          </button>
+          </Link>
         </div>
       </div>
     </section>
