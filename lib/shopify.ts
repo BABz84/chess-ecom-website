@@ -117,13 +117,9 @@ export async function getAllProducts() {
             title
             handle
             description
-            images(first: 1) {
-              edges {
-                node {
-                  originalSrc
-                  altText
-                }
-              }
+            featuredImage {
+              url
+              altText
             }
           }
         }
