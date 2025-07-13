@@ -35,15 +35,19 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
 
 export default async function ProductPage({
   params,
+  searchParams,
 }: {
-  params: Promise<{ handle: string }>
+  params: { handle: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { handle } = await params;
-  const product = await getProduct(handle)
+  const { handle } = params;
+  const product = await getProduct(handle);
 
   if (!product) {
-    notFound()
+    notFound();
   }
 
-  return <ProductDetail product={product} />
+  const initialImage = searchParams?.image_url as string | undefined;
+
+  return <ProductDetail product={product} initialImage={initialImage} />;
 }

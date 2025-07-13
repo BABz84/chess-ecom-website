@@ -6,10 +6,10 @@ import { useCart } from "@/components/cart-provider"
 import { useState, useEffect } from "react"
 import { Product, ProductVariant } from "@/lib/types"
 
-export default function ProductDetail({ product }: { product: Product }) {
+export default function ProductDetail({ product, initialImage }: { product: Product, initialImage?: string }) {
   const { addItem } = useCart()
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(product.variants.nodes[0])
-  const [displayedImage, setDisplayedImage] = useState(selectedVariant?.image?.url || product.images.nodes[0]?.url || "/placeholder.jpg")
+  const [displayedImage, setDisplayedImage] = useState(initialImage || selectedVariant?.image?.url || product.images.nodes[0]?.url || "/placeholder.jpg")
 
   const handleVariantChange = (variant: ProductVariant) => {
     setSelectedVariant(variant);

@@ -6,8 +6,13 @@ import { Badge } from "@/components/ui/badge"
 import { ProductCardData } from "@/lib/types"
 
 export default function ProductCard({ product }: { product: ProductCardData }) {
+  const hasExpandImagesTag = product.tags?.includes('expand-images');
+  const href = hasExpandImagesTag
+    ? `/products/${product.handle || product.id}?image_url=${encodeURIComponent(product.featuredImage?.url || '')}`
+    : `/products/${product.handle || product.id}`;
+
   return (
-    <Link href={`/products/${product.handle || product.id}`} className="group block">
+    <Link href={href} className="group block">
       <div className="overflow-hidden rounded-lg border shadow-sm transition-all duration-300 hover:shadow-lg">
         <div className="aspect-square overflow-hidden">
           <Image
