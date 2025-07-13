@@ -5,9 +5,14 @@ import type { Metadata } from 'next'
 
 export const runtime = 'edge';
 
-export async function generateMetadata({ params }: { params: { handle: string } }): Promise<Metadata> {
+type Props = {
+  params: { handle: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = params;
-  const product = await getProduct(handle)
+  const product = await getProduct(handle);
 
   if (!product) {
     return {
@@ -33,13 +38,7 @@ export async function generateMetadata({ params }: { params: { handle: string } 
   }
 }
 
-export default async function ProductPage({
-  params,
-  searchParams,
-}: {
-  params: { handle: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+export default async function ProductPage({ params, searchParams }: Props) {
   const { handle } = params;
   const product = await getProduct(handle);
 
