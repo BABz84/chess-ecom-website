@@ -5,8 +5,8 @@ import type { Metadata } from 'next'
 
 export const runtime = 'edge';
 
-export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
-  const { handle } = await params;
+export async function generateMetadata({ params }: { params: { handle: string } }): Promise<Metadata> {
+  const { handle } = params;
   const product = await getProduct(handle)
 
   if (!product) {
