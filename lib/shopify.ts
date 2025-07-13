@@ -35,6 +35,7 @@ export async function fetchCollection(handle: string) {
             handle
             description
             descriptionHtml
+            tags
             featuredImage {
               url
               altText
@@ -141,6 +142,7 @@ export async function getProduct(handle: string) {
         handle
         description
         descriptionHtml
+        tags
         images(first: 10) {
           nodes {
             url

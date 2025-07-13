@@ -35,7 +35,7 @@ export default function Footer() {
             <h3 className="font-semibold text-lg">Story Collections</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/products/chess-pieces" className="text-red-100 hover:text-white transition-colors">
+                <Link href="/collections/chess-pieces" className="text-red-100 hover:text-white transition-colors">
                   Historical Chess Pieces
                 </Link>
               </li>

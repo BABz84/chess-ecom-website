@@ -10,15 +10,6 @@ export default function ProductDetail({ product }: { product: Product }) {
   const { addItem } = useCart()
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(product.variants.nodes[0])
   const [displayedImage, setDisplayedImage] = useState(selectedVariant?.image?.url || product.images.nodes[0]?.url || "/placeholder.jpg")
-  const [sanitizedHtml, setSanitizedHtml] = useState('');
-
-  useEffect(() => {
-    const sanitizeHtml = async () => {
-      const DOMPurify = (await import('dompurify')).default;
-      setSanitizedHtml(DOMPurify.sanitize(product.descriptionHtml || product.description));
-    };
-    sanitizeHtml();
-  }, [product.descriptionHtml, product.description]);
 
   const handleVariantChange = (variant: ProductVariant) => {
     setSelectedVariant(variant);
@@ -40,16 +31,37 @@ export default function ProductDetail({ product }: { product: Product }) {
     <div className="container mx-auto px-4 py-16">
       <div className="grid md:grid-cols-2 gap-12">
         <div>
-          <Image
-            key={displayedImage}
-            src={displayedImage}
-            alt={altText}
-            width={selectedVariant?.image?.width ?? 2048}
-            height={selectedVariant?.image?.height ?? 2048}
+          <div className="max-h-[500px] overflow-hidden rounded-lg">
+            <Image
+              key={displayedImage}
+              src={displayedImage}
+              alt={altText}
+              width={selectedVariant?.image?.width ?? 2048}
+              height={selectedVariant?.image?.height ?? 2048}
             sizes="(min-width: 768px) 50vw, 100vw"
             priority
-            className="w-full h-full object-cover rounded-lg"
+            className="w-full h-full object-contain rounded-lg max-h-[500px]"
           />
+        </div>
+          {product.tags.includes('expand-images') && (
+            <div className="grid grid-cols-5 gap-4 mt-4">
+              {product.images.nodes.map((image, index) => (
+                <div
+                  key={index}
+                  className={`cursor-pointer border-2 ${displayedImage === image.url ? 'border-red-500' : 'border-transparent'} rounded-lg overflow-hidden`}
+                  onClick={() => setDisplayedImage(image.url)}
+                >
+                  <Image
+                    src={image.url}
+                    alt={image.altText || `Thumbnail ${index + 1}`}
+                    width={100}
+                    height={100}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div>
           <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
@@ -72,7 +84,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
           <div
             className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+            dangerouslySetInnerHTML={{ __html: product.descriptionHtml || product.description }}
           />
           <Button
             size="lg"

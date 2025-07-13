@@ -29,6 +29,7 @@ export type Product = {
   handle: string;
   description: string;
   descriptionHtml: string;
+  tags: string[];
   featuredImage?: {
     url: string;
     altText?: string;
@@ -58,6 +59,7 @@ export type ProductCardData = {
   id: string;
   handle: string;
   title: string;
+  tags?: string[];
   featuredImage?: {
     url: string;
     altText?: string;
