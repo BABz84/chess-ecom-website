@@ -1,6 +1,7 @@
 import { getProduct } from "@/lib/shopify"
 import ProductDetail from "@/components/product-detail"
 import { notFound } from "next/navigation"
+import { use } from "react";
 import type { Metadata } from 'next'
 
 export const runtime = 'edge';
@@ -8,9 +9,9 @@ export const runtime = 'edge';
 export async function generateMetadata({
   params,
 }: {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
-  const { handle } = params;
+  const { handle } = await params;
   const product = await getProduct(handle)
 
   if (!product) {
@@ -41,17 +42,22 @@ export default async function ProductPage({
   params,
   searchParams,
 }: {
-  params: { handle: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: Promise<{ handle: string }>;
+  searchParams?: Promise<
+    Record<string, string | string[] | undefined>
+  >;
 }) {
-  const { handle } = params;
+  // two equivalent ways to resolve the promise -----------------
+  // 1. classic:
+  const { handle } = await params;
+
+  // 2. React 19 helper (remove the line above if you keep this):
+  // const { handle } = use(params);
+  // -------------------------------------------------------------
+
   const product = await getProduct(handle);
+  if (!product) notFound();
 
-  if (!product) {
-    notFound();
-  }
-
-  const initialImage = searchParams?.image_url as string | undefined;
-
-  return <ProductDetail product={product} initialImage={initialImage} />;
+  const { image_url } = (await searchParams) ?? {};
+  return <ProductDetail product={product} initialImage={image_url as string | undefined} />;
 }
