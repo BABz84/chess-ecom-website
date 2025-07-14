@@ -43,7 +43,7 @@ export default function AboutSection() {
             <div className="text-right">
               <div className="relative inline-block">
                 <video
-                  src="https://pub-128839488dd240b491fd5f21a293b7d8.r2.dev/DW_final.mp4"
+                  src="https://pub-128839488dd240b491fd5f21a293b7d8.r2.dev/DW_Final_2.mp4"
                   poster="https://pub-128839488dd240b491fd5f21a293b7d8.r2.dev/Mr.webp"
                   controls
                   className="rounded-lg shadow-lg w-full"

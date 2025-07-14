@@ -59,10 +59,10 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>
-                    <Link href="/collections/pod-prints">POD Prints</Link>
+                    <Link href="/collections/pod-prints">Pan Afro Prints</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href="/collections/pod-items">POD Items</Link>
+                    <Link href="/collections/pod-items">Pan Afro Collectables</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -113,13 +113,13 @@ export default function Header() {
                       href="/collections/pod-prints"
                       className="text-xl font-medium hover:text-red-600 transition-colors"
                     >
-                      POD Prints
+                      Pan Afro Prints
                     </Link>
                     <Link
                       href="/collections/pod-items"
                       className="text-xl font-medium hover:text-red-600 transition-colors"
                     >
-                      POD Items
+                      Pan Afro Collectables
                     </Link>
                     <Link href="/#about-us" className="text-xl font-medium hover:text-red-600 transition-colors">
                       About
