@@ -111,29 +111,49 @@ export async function getCollection(handle: string) {
   return response.collection
 }
 
-export async function getAllProducts() {
-  const query = `
-    {
-      products(first: 250, query: "available_for_sale:true OR available_for_sale:false") {
-        edges {
-          node {
-            id
-            title
-            handle
-            description
-            featuredImage {
-              url
-              altText
-            }
+const GET_PRODUCTS = `
+  query GetProducts($cursor: String) {
+    products(
+      first: 250
+      after: $cursor
+      sortKey: TITLE
+      query: "status:ACTIVE AND published_status:PUBLISHED"
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          title
+          handle
+          description
+          featuredImage {
+            url
+            altText
           }
+          status
         }
       }
+      pageInfo {
+        hasNextPage
+      }
     }
-  `
+  }
+`;
 
-  const response = await ShopifyData(query)
-  const products = response.products ? response.products.edges : []
-  return products
+export async function getAllProducts(
+  cursor: string | null = null,
+  acc: any[] = []
+): Promise<any[]> {
+  const { data } = await ShopifyData(GET_PRODUCTS, {
+    variables: cursor ? { cursor } : {}
+  })
+
+  const edges = data.products.edges
+  const products = acc.concat(edges.map((e: any) => e.node))
+
+  return data.products.pageInfo.hasNextPage
+    ? getAllProducts(edges[edges.length - 1].cursor, products)
+    : products
 }
 
 export async function getProduct(handle: string) {
