@@ -6,7 +6,7 @@ const client = createStorefrontApiClient({
   publicAccessToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN!,
 });
 
-async function ShopifyData(query: string, variables: object = {}) {
+export async function ShopifyData(query: string, variables: object = {}) {
   try {
     const { data, errors } = await client.request(query, { variables });
 

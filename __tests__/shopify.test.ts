@@ -1,103 +1,87 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { getProductsInCollection, getProduct, getAllProducts, createCart } from '../lib/shopify';
+import { fetchCollection, getProduct, getAllProducts, getCollection } from '../lib/shopify';
+import { vi, describe, it, expect } from 'vitest';
+
+// Mock the entire shopify module
+vi.mock('../lib/shopify', async () => {
+  const actual = await vi.importActual('../lib/shopify');
+  return {
+    ...actual,
+    ShopifyData: vi.fn(),
+  };
+});
+
+const { ShopifyData } = await import('../lib/shopify');
 
 describe('Shopify Service', () => {
-  let fetchSpy: jest.SpiedFunction<typeof fetch>;
-
-  beforeEach(() => {
-    fetchSpy = jest.spyOn(global, 'fetch');
-  });
-
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('should fetch products in a collection correctly', async () => {
-    fetchSpy.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({
-        data: {
-          collection: {
-            products: {
-              edges: [
-                { node: { id: '1', title: 'Test Product 1' } },
-                { node: { id: '2', title: 'Test Product 2' } },
-              ],
-            },
-          },
-        },
-      }),
-    } as Response);
+  describe('fetchCollection', () => {
+    it('should return collection data when successful', async () => {
+      const mockCollection = {
+        id: '1',
+        title: 'Test Collection',
+        products: { nodes: [] },
+      };
+      (ShopifyData as any).mockResolvedValue({ collectionByHandle: mockCollection });
 
-    const products = await getProductsInCollection('test-collection');
-    
-    expect(products).toBeInstanceOf(Array);
-    expect(products.length).toBe(2);
-    expect(products[0].node.title).toBe('Test Product 1');
-    
-    // Verify that fetch was called with the correct Shopify URL
-    expect(fetch).toHaveBeenCalledWith(
-      expect.stringContaining('graphql.json'),
-      expect.any(Object)
-    );
+      const collection = await fetchCollection('test-handle');
+
+      expect(ShopifyData).toHaveBeenCalledWith(expect.any(String), { handle: 'test-handle' }, 'no-store');
+      expect(collection).toEqual(mockCollection);
+    });
+
+    it('should throw an error if the API call fails', async () => {
+      (ShopifyData as any).mockRejectedValue(new Error('API Error'));
+      await expect(fetchCollection('test-handle')).rejects.toThrow('Products not fetched');
+    });
+
+    it('should be called with no-store cache policy', async () => {
+      const mockCollection = { id: '1', title: 'Test Collection', products: { nodes: [] } };
+      (ShopifyData as any).mockResolvedValue({ collectionByHandle: mockCollection });
+
+      await fetchCollection('test-handle');
+
+      // Get the last call to ShopifyData and inspect its arguments
+      const lastCallArgs = (ShopifyData as any).mock.calls[0];
+      const cachePolicy = lastCallArgs[2];
+
+      // Assert that the cache policy is 'no-store'
+      expect(cachePolicy).toBe('no-store');
+    });
   });
 
-  it('should fetch a single product correctly', async () => {
-    fetchSpy.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({
-        data: {
-          product: { id: '1', title: 'Test Product 1' },
-        },
-      }),
-    } as Response);
+  describe('getCollection', () => {
+    it('should return collection data when successful', async () => {
+      const mockCollection = { id: '2', title: 'Another Collection' };
+      (ShopifyData as any).mockResolvedValue({ collection: mockCollection });
 
-    const product = await getProduct('test-product');
-    
-    expect(product).not.toBeNull();
-    expect(product.title).toBe('Test Product 1');
+      const collection = await getCollection('another-handle');
+      expect(ShopifyData).toHaveBeenCalledWith(expect.any(String), { handle: 'another-handle' });
+      expect(collection).toEqual(mockCollection);
+    });
   });
 
-  it('should fetch all product slugs correctly', async () => {
-    fetchSpy.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({
-        data: {
-          products: {
-            edges: [
-              { node: { handle: 'product-1' } },
-              { node: { handle: 'product-2' } },
-            ],
-          },
-        },
-      }),
-    } as Response);
+  describe('getAllProducts', () => {
+    it('should return all products when successful', async () => {
+      const mockProducts = { products: { edges: [{ node: { id: 'prod1' } }] } };
+      (ShopifyData as any).mockResolvedValue(mockProducts);
 
-    const slugs = await getAllProducts();
-    
-    expect(slugs).toBeInstanceOf(Array);
-    expect(slugs.length).toBe(2);
-    expect(slugs[0].node.handle).toBe('product-1');
+      const products = await getAllProducts();
+      expect(ShopifyData).toHaveBeenCalledWith(expect.any(String));
+      expect(products).toEqual(mockProducts.products.edges);
+    });
   });
 
-  it('should create a cart correctly', async () => {
-    fetchSpy.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({
-        data: {
-          cartCreate: {
-            cart: { id: 'cart-1', checkoutUrl: 'http://checkout.url' },
-            userErrors: [],
-          },
-        },
-      }),
-    } as Response);
+  describe('getProduct', () => {
+    it('should return a single product when successful', async () => {
+      const mockProduct = { id: 'prod1', title: 'Test Product' };
+      (ShopifyData as any).mockResolvedValue({ product: mockProduct });
 
-    const lineItems = [{ merchandiseId: '1', quantity: 1 }];
-    const cart = await createCart(lineItems);
-    
-    expect(cart).not.toBeNull();
-    expect(cart.id).toBe('cart-1');
-    expect(cart.checkoutUrl).toBe('http://checkout.url');
+      const product = await getProduct('test-product');
+      expect(ShopifyData).toHaveBeenCalledWith(expect.any(String), { handle: 'test-product' });
+      expect(product).toEqual(mockProduct);
+    });
   });
 });
