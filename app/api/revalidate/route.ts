@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
-import crypto from 'crypto'
+
+export const runtime = 'edge'
+
+async function verifyShopifySignature(secret: string, body: string, signature: string): Promise<boolean> {
+  const encoder = new TextEncoder()
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+  const mac = await crypto.subtle.sign('HMAC', key, encoder.encode(body))
+  const calculatedSignature = btoa(String.fromCharCode(...new Uint8Array(mac)))
+  return calculatedSignature === signature
+}
 
 export async function POST(request: NextRequest) {
   const secret = process.env.SHOPIFY_WEBHOOK_SECRET
@@ -11,11 +26,18 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  const hmac = request.headers.get('X-Shopify-Hmac-Sha256')
-  const body = await request.text()
-  const hash = crypto.createHmac('sha256', secret).update(body).digest('base64')
+  const hmac = request.headers.get('x-shopify-hmac-sha256')
+  if (!hmac) {
+    return new NextResponse(JSON.stringify({ message: 'Missing Shopify HMAC signature' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
 
-  if (hash !== hmac) {
+  const body = await request.text()
+  const isValid = await verifyShopifySignature(secret, body, hmac)
+
+  if (!isValid) {
     return new NextResponse(JSON.stringify({ message: 'Invalid webhook signature' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
