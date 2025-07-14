@@ -72,7 +72,7 @@ export default function Header() {
               </Link>
 
               <Link
-                href="/contact"
+                href="mailto:info@mansagallery.com"
                 className="text-base font-medium text-slate-700 hover:text-red-600 transition-colors"
               >
                 Contact
@@ -124,7 +124,7 @@ export default function Header() {
                     <Link href="/#about-us" className="text-xl font-medium hover:text-red-600 transition-colors">
                       About
                     </Link>
-                    <Link href="/contact" className="text-xl font-medium hover:text-red-600 transition-colors">
+                    <Link href="mailto:info@mansagallery.com" className="text-xl font-medium hover:text-red-600 transition-colors">
                       Contact
                     </Link>
                     <hr className="my-4" />
