@@ -111,49 +111,43 @@ export async function getCollection(handle: string) {
   return response.collection
 }
 
-const GET_PRODUCTS = `
-  query GetProducts($cursor: String) {
-    products(
-      first: 250
-      after: $cursor
-      sortKey: TITLE
-      query: "status:ACTIVE AND published_status:PUBLISHED"
-    ) {
-      edges {
-        cursor
-        node {
-          id
-          title
-          handle
-          description
-          featuredImage {
-            url
-            altText
+export async function getAllProducts() {
+  const query = `
+    query getAllProducts($cursor: String) {
+      products(first: 250, after: $cursor, query: "status:active") {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        edges {
+          node {
+            id
+            title
+            handle
+            description
+            featuredImage {
+              url
+              altText
+            }
           }
-          status
         }
       }
-      pageInfo {
-        hasNextPage
-      }
     }
+  `;
+
+  let allProducts: any[] = [];
+  let hasNextPage = true;
+  let cursor = null;
+
+  while (hasNextPage) {
+    const response = await ShopifyData(query, { cursor });
+    const products = response.products ? response.products.edges : [];
+    allProducts = [...allProducts, ...products];
+    hasNextPage = response.products.pageInfo.hasNextPage;
+    cursor = response.products.pageInfo.endCursor;
   }
-`;
 
-export async function getAllProducts(
-  cursor: string | null = null,
-  acc: any[] = []
-): Promise<any[]> {
-  const { data } = await ShopifyData(GET_PRODUCTS, {
-    variables: cursor ? { cursor } : {}
-  })
-
-  const edges = data.products.edges
-  const products = acc.concat(edges.map((e: any) => e.node))
-
-  return data.products.pageInfo.hasNextPage
-    ? getAllProducts(edges[edges.length - 1].cursor, products)
-    : products
+  return allProducts;
 }
 
 export async function getProduct(handle: string) {
