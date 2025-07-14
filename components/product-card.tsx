@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ProductCardData } from "@/lib/types"
 
-export default function ProductCard({ product }: { product: ProductCardData }) {
+export default function ProductCard({ product, priority }: { product: ProductCardData, priority?: boolean }) {
   const hasExpandImagesTag = product.tags?.includes('expand-images');
   const href = hasExpandImagesTag
     ? `/products/${product.handle || product.id}?image_url=${encodeURIComponent(product.featuredImage?.url || '')}`
@@ -21,6 +21,8 @@ export default function ProductCard({ product }: { product: ProductCardData }) {
             width={400}
             height={400}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            priority={priority}
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           />
         </div>
         <div className="p-4">

@@ -1,24 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { Crown, Palette } from "lucide-react"
 
 export default function HeroCarousel({ heroProducts }: { heroProducts: any[] }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
-    if (heroProducts.length === 0) return
-
+    if (heroProducts.length <= 1) return
     const interval = setInterval(() => {
-      setIsTransitioning(true)
-
-      setTimeout(() => {
-        setCurrentImageIndex((prevIndex) => (prevIndex === heroProducts.length - 1 ? 0 : prevIndex + 1))
-        setIsTransitioning(false)
-      }, 300) // Half of transition duration
+      setCurrentImageIndex((prevIndex) => (prevIndex === heroProducts.length - 1 ? 0 : prevIndex + 1))
     }, 4000) // Change image every 4 seconds
-
     return () => clearInterval(interval)
   }, [heroProducts])
 
@@ -35,18 +28,19 @@ export default function HeroCarousel({ heroProducts }: { heroProducts: any[] }) 
   return (
     <div className="relative flex items-center justify-center">
       <div className="aspect-square bg-gradient-to-br from-red-100 to-red-200 rounded-2xl p-4 shadow-2xl card-red relative max-w-sm w-full">
-        {heroProducts.length > 0 && (
-          <img
-            src={heroProducts[currentImageIndex].images.nodes[0]?.url || "/placeholder.svg"}
-            alt={
-              heroProducts[currentImageIndex].images.nodes[0]?.altText ||
-              heroProducts[currentImageIndex].title
-            }
-            className={`w-full h-full object-cover rounded-lg transition-all duration-600 ${
-              isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
+        {heroProducts.map((product, index) => (
+          <Image
+            key={product.id}
+            src={product.images.nodes[0]?.url || "/placeholder.svg"}
+            alt={product.images.nodes[0]?.altText || product.title}
+            fill
+            priority={index === 0}
+            sizes="(max-width: 1024px) 90vw, 420px"
+            className={`object-cover rounded-lg transition-opacity duration-300 ${
+              index === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
           />
-        )}
+        ))}
       </div>
 
       {/* Category indicator */}
@@ -63,13 +57,7 @@ export default function HeroCarousel({ heroProducts }: { heroProducts: any[] }) 
         {heroProducts.map((_, index) => (
           <button
             key={index}
-            onClick={() => {
-              setIsTransitioning(true)
-              setTimeout(() => {
-                setCurrentImageIndex(index)
-                setIsTransitioning(false)
-              }, 300)
-            }}
+            onClick={() => setCurrentImageIndex(index)}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
               index === currentImageIndex ? "bg-white scale-125" : "bg-white/50 hover:bg-white/75"
             }`}

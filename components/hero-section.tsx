@@ -1,3 +1,4 @@
+import Image from "next/image"
 import HeroCarousel from "./hero-carousel"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Crown, Palette, Shirt } from "lucide-react"
@@ -13,7 +14,14 @@ export default function HeroSection({ heroProducts }: { heroProducts: any[] }) {
           <div className="space-y-4 text-white flex flex-col justify-center">
             {/* Logo - Increased size for better text readability */}
             <div className="mb-2">
-              <img src="/images/mansa-gallery-logo-bordered.png" alt="Mansa Gallery Logo" className="h-32 w-auto" />
+              <Image
+                src="/images/mansa-gallery-logo-bordered.png"
+                alt="Mansa Gallery Logo"
+                width={256}
+                height={256}
+                className="h-32 w-auto"
+                priority
+              />
             </div>
             <div className="space-y-3">
               <h1 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
