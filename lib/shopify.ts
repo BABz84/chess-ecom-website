@@ -114,7 +114,7 @@ export async function getCollection(handle: string) {
 export async function getAllProducts() {
   const query = `
     {
-      products(first: 250) {
+      products(first: 250, query: "available_for_sale:true OR available_for_sale:false") {
         edges {
           node {
             id
