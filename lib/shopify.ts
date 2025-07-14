@@ -8,7 +8,10 @@ const client = createStorefrontApiClient({
 
 export async function ShopifyData(query: string, variables: object = {}) {
   try {
-    const { data, errors } = await client.request(query, { variables });
+    const { data, errors } = await client.request(query, {
+      variables,
+      cache: 'no-store',
+    } as any);
 
     if (errors) {
       console.error("Shopify API Errors:", JSON.stringify(errors, null, 2));
