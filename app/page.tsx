@@ -1,4 +1,7 @@
 import { Suspense } from "react"
+
+export const dynamic = 'force-dynamic'
+
 import HeroSectionLoader from "@/components/hero-section-loader"
 import FeaturedProducts from "@/components/featured-products"
 import AboutSection from "@/components/about-section"

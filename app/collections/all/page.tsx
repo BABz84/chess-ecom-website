@@ -4,6 +4,7 @@ import { Product } from '@/lib/types';
 import ProductCard from '@/components/product-card';
 
 export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const products = await getAllProducts();

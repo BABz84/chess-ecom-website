@@ -4,6 +4,8 @@ import { Shirt } from "lucide-react"
 import { fetchCollection } from "@/lib/shopify"
 import { Product } from "@/lib/types"
 
+export const dynamic = 'force-dynamic';
+
 export default async function PrintifyShowcase({ collectionHandle }: { collectionHandle: string }) {
   const collection = await fetchCollection(collectionHandle)
   if (!collection) return null
