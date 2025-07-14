@@ -3,8 +3,6 @@ import Link from "next/link"
 import { fetchCollection } from "@/lib/shopify"
 import { Product } from "@/lib/types"
 
-export const dynamic = 'force-dynamic';
-
 export default async function FeaturedProducts({ collectionHandle }: { collectionHandle: string }) {
   const collection = await fetchCollection(collectionHandle)
   if (!collection) return null

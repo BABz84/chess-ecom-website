@@ -4,8 +4,6 @@ import { Palette } from "lucide-react"
 import { fetchCollection } from "@/lib/shopify"
 import { Product } from "@/lib/types"
 
-export const dynamic = 'force-dynamic';
-
 export default async function GelatoShowcase({ collectionHandle }: { collectionHandle: string }) {
   const collection = await fetchCollection(collectionHandle)
   if (!collection) return null

@@ -4,7 +4,6 @@ import { Product } from '@/lib/types';
 import ProductCard from '@/components/product-card';
 
 export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
 
 export default async function Page({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
