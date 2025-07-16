@@ -14,8 +14,8 @@ export default async function Page() {
       <h1 className="text-3xl font-bold text-center mb-8">All Products</h1>
       {products.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
-          {products.map((product: { node: Product }) => (
-            <ProductCard key={product.node.id} product={product.node} />
+          {products.map((product: { node: Product }, index: number) => (
+            <ProductCard key={product.node.id} product={product.node} priority={index < 4} />
           ))}
         </div>
       ) : (
