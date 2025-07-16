@@ -25,7 +25,17 @@ export default function ProductDetail({ product, initialImage }: { product: Prod
     currency: selectedVariant.price.currencyCode,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(parseFloat(selectedVariant.price.amount))
+  }).format(parseFloat(selectedVariant.price.amount));
+
+  const compareAtPrice = selectedVariant.compareAtPrice ? new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: selectedVariant.compareAtPrice.currencyCode,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(parseFloat(selectedVariant.compareAtPrice.amount)) : null;
+
+  const isSoldOut = !selectedVariant.availableForSale;
+  const isOnSale = selectedVariant.compareAtPrice && parseFloat(selectedVariant.compareAtPrice.amount) > parseFloat(selectedVariant.price.amount);
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -65,9 +75,16 @@ export default function ProductDetail({ product, initialImage }: { product: Prod
         </div>
         <div>
           <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-          <p className="text-2xl text-gray-800 mb-6">
-            {price}
-          </p>
+          <div className="flex items-center mb-6">
+            <p className={`text-2xl text-gray-800 ${isOnSale ? 'text-red-600' : ''}`}>
+              {price}
+            </p>
+            {isOnSale && compareAtPrice && (
+              <p className="text-xl text-gray-500 line-through ml-4">
+                {compareAtPrice}
+              </p>
+            )}
+          </div>
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Select {product.options[0].name}</h3>
             <div className="flex flex-wrap gap-2">
@@ -88,10 +105,11 @@ export default function ProductDetail({ product, initialImage }: { product: Prod
           />
           <Button
             size="lg"
-            className="w-full mt-8 bg-red-600 hover:bg-red-700"
+            className="w-full mt-8 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             onClick={() => addItem({ id: selectedVariant.id, title: product.title, price: parseFloat(selectedVariant.price.amount), image: displayedImage, merchandiseId: selectedVariant.id, lineId: '' })}
+            disabled={isSoldOut}
           >
-            Add to Cart
+            {isSoldOut ? "Sold Out" : "Add to Cart"}
           </Button>
         </div>
       </div>
