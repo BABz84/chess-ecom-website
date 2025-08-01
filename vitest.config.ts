@@ -14,9 +14,6 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './jest.setup.tsx',
     include: ['__tests__/**/*.test.ts', '__tests__/**/*.test.tsx'],
-    mocks: {
-      'lib/shopify-client': './__tests__/mocks/shopify-client.ts',
-    },
     exclude: ['node_modules', 'e2e/**'],
     env: {
       NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN: 'mock.myshopify.com',
