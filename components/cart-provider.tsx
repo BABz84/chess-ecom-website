@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import { createCart, addCartLines, removeCartLines, updateCartLines } from "@/lib/shopify"
+import { createCart, addCartLines, removeCartLines, updateCartLines, getCart } from "@/lib/shopify"
 
 interface CartItem {
   id: string;
@@ -32,22 +32,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null)
 
   useEffect(() => {
-    const localCart = window.localStorage.getItem("cart")
-    if (localCart) {
-      const { items, cartId, checkoutUrl } = JSON.parse(localCart)
-      setItems(items)
-      setCartId(cartId)
-      setCheckoutUrl(checkoutUrl)
+    const initializeCart = async () => {
+      const localCartId = window.localStorage.getItem("cartId")
+
+      if (localCartId) {
+        const cart = await getCart(localCartId)
+        if (cart) {
+          const cartItems = cart.lines.nodes.map((line: any) => ({
+            id: line.merchandise.product.id,
+            title: line.merchandise.product.title,
+            price: parseFloat(line.merchandise.price.amount),
+            quantity: line.quantity,
+            image: line.merchandise.image.url,
+            merchandiseId: line.merchandise.id,
+            lineId: line.id,
+          }))
+          setItems(cartItems)
+          setCartId(cart.id)
+          setCheckoutUrl(cart.checkoutUrl)
+        } else {
+          // Cart ID was invalid, clear it
+          window.localStorage.removeItem("cartId")
+        }
+      }
     }
+    initializeCart()
   }, [])
 
   useEffect(() => {
-    if (items.length > 0) {
-      window.localStorage.setItem("cart", JSON.stringify({ items, cartId, checkoutUrl }))
+    if (cartId) {
+      window.localStorage.setItem("cartId", cartId)
     } else {
-      window.localStorage.removeItem("cart")
+      window.localStorage.removeItem("cartId")
     }
-  }, [items, cartId, checkoutUrl])
+  }, [cartId])
 
   const addItem = async (newItem: Omit<CartItem, "quantity" | "lineId">) => {
     const existingItem = items.find((item) => item.id === newItem.id);
@@ -84,8 +102,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const removeItem = async (id: string) => {
     const itemToRemove = items.find((item) => item.id === id);
     if (cartId && itemToRemove) {
-      await removeCartLines(cartId, [itemToRemove.lineId]);
-      setItems((prev) => prev.filter((item) => item.id !== id));
+      try {
+        await removeCartLines(cartId, [itemToRemove.lineId]);
+        setItems((prev) => prev.filter((item) => item.id !== id));
+      } catch (error) {
+        console.error("Failed to remove item:", error)
+        // Optionally: show a toast notification to the user
+      }
     }
   };
 

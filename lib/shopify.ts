@@ -222,6 +222,51 @@ export async function getProduct(handle: string) {
 }
 
 /**
+ * Fetches a cart by its ID, returning its current state from Shopify.
+ * This is crucial for synchronizing the local cart state with the source of truth.
+ *
+ * @param {string} cartId - The ID of the cart to fetch.
+ * @returns {Promise<any>} A promise that resolves with the cart data.
+ */
+export async function getCart(cartId: string) {
+  const query = `
+    query getCart($cartId: ID!) {
+      cart(id: $cartId) {
+        id
+        checkoutUrl
+        lines(first: 100) {
+          nodes {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                product {
+                  id
+                  title
+                }
+                price {
+                  amount
+                  currencyCode
+                }
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `
+  const variables = { cartId }
+  const response = await ShopifyData(query, variables)
+  return response.cart
+}
+
+/**
  * Creates a new shopping cart with an initial set of line items.
  *
  * @param {{ merchandiseId: string; quantity: number }[]} lineItems - An array of items to add to the new cart.
