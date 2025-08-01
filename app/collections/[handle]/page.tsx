@@ -4,7 +4,7 @@ import { Product } from '@/lib/types';
 import ProductCard from '@/components/product-card';
 
 export const runtime = 'edge';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function Page({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
