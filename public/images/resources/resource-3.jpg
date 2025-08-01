@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html  lang="oc" xml:lang="oc">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <title>Redirect</title>
+        <style>
+body {
+    margin: 0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: .9375rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #343a40;
+    text-align: left;
+    background-color: #f2f2f2;
+}
+#page {
+    margin-top: 15px;
+    background: white;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 15px;
+}
+#region-main {
+    margin: 0 auto;
+    border: 1px solid rgba(0,0,0,.125);
+    padding: 1rem 1.25rem 1.25rem;
+    background-color: #fff;
+}
+h1 {
+    font-size: 2.34rem;
+    margin: 0 0 .5rem;
+    font-weight: 300;
+    line-height: 1.2;
+}
+.alert-danger {
+    color: #6e211e;
+    background-color: #f6d9d8;
+    border-color: #f3c9c8;
+    padding: .75rem 1.25rem;
+}
+    </style>
+    </head>
+    <body>
+        <div id="page">
+            <div id="region-main">
+                <h1>Redirect</h1>
+                <div style="margin-top: 3em; margin-left:auto; margin-right:auto; text-align:center;">This page should automatically redirect. If nothing is happening please use the continue link below.<br /><a href="https://www.open.edu/openlearn/93/e2/93e2713da5cc09c69abeec80f593a3e8ad867d2a?response-content-disposition=inline%3Bfilename%3D%22alice_bah_catland.jpg%22&amp;response-content-type=image%2Fjpeg&amp;Expires=1751556900&amp;Signature=GKhZSWbWa4a-6bZ8S3T3CEGVtLGoRUMrX4uKxrt5hZjfg8Gn0MRWikXCi1k0tH1D-MYxsJHtTgZoHdvzvGxpH6kZjW6r4CqGrhE2aVvHwB4EL7C72iCO2RgU4oDRJXQH4MqIrtE7QNudCo~gRdhyarfiFIIN61qhva7BakusRNCFmVv4RHwfaX9jG~2oQ6p8mZfZGjD88y2bwZQDX3gmumMe5HQBc1GME003l8cKK4Mu5RWb-PFh9A64WEWtDcN3FSbpwH7JE9KqG-HwpKthsxCh9UdpyT8svcxFVDNzUkcUilfz9ILZOpcDClNtVVhcuXYXWUGlprEUuctT77xtjw__&amp;Key-Pair-Id=K87HJKWMK329B">Continue</a></div>                            </div>
+        </div>
+    </body>
+</html>
+

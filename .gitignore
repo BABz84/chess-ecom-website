@@ -1,0 +1,20 @@
+# Dependencies
+/node_modules
+/.pnpm-store
+
+# Next.js
+/.next/
+/out/
+
+# Local Development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# System Files
+.DS_Store
+
+# Test Results
+/playwright-report/
+/test-results/
