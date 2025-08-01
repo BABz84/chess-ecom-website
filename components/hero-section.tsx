@@ -49,7 +49,7 @@ export default function HeroSection({ heroProducts }: { heroProducts: any[] }) {
               </div>
               <div className="bg-white/10 backdrop-blur rounded-lg p-3 text-center">
                 <Shirt className="h-6 w-6 text-yellow-300 mx-auto mb-2" />
-                <h3 className="font-semibold text-sm">Heritage Collection</h3>
+                <h3 className="font-semibold text-sm">Pan African Collectibles</h3>
                 <p className="text-sm text-red-200">Wearable history</p>
               </div>
             </div>

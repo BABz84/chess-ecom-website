@@ -23,7 +23,6 @@ export default function ProductCard({ product, priority }: { product: ProductCar
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             priority={priority}
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            placeholder="blur"
           />
         </div>
         <div className="p-4">

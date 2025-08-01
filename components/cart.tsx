@@ -3,7 +3,7 @@
 import { useCart } from "@/components/cart-provider"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription, SheetClose } from "@/components/ui/sheet"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
 
@@ -33,13 +33,13 @@ export default function Cart() {
         </Button>
       </SheetTrigger>
       <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Shopping Cart ({totalItems})</SheetTitle>
-          <SheetDescription>
-            Review your items and proceed to checkout.
-          </SheetDescription>
-        </SheetHeader>
         <div className="flex flex-col h-full">
+          <SheetHeader>
+            <SheetTitle>Shopping Cart ({totalItems})</SheetTitle>
+            <SheetDescription>
+              Review your items and proceed to checkout.
+            </SheetDescription>
+          </SheetHeader>
           {items.length === 0 ? (
             <div className="flex-grow flex items-center justify-center">
               <p>Your cart is empty.</p>
@@ -79,14 +79,21 @@ export default function Cart() {
                   ))}
                 </div>
               </div>
-              <div className="pt-4 border-t">
+              <div className="pt-4 border-t flex-shrink-0">
                 <div className="flex justify-between font-semibold">
                   <span>Subtotal</span>
                   <span>${totalPrice.toFixed(2)}</span>
                 </div>
-                <Button size="lg" className="w-full mt-4 bg-red-600 hover:bg-red-700" onClick={handleCheckout}>
-                  Proceed to Checkout
-                </Button>
+                <div className="flex flex-col space-y-2 mt-4">
+                  <SheetClose asChild>
+                    <Button size="lg" variant="outline">
+                      Continue Shopping
+                    </Button>
+                  </SheetClose>
+                  <Button size="lg" className="bg-red-600 hover:bg-red-700" onClick={handleCheckout}>
+                    Proceed to Checkout
+                  </Button>
+                </div>
               </div>
             </>
           )}

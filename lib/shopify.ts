@@ -33,7 +33,7 @@ export async function fetchCollection(handle: string) {
               url
               altText
             }
-            images(first: 10) {
+            images(first: 250) {
               nodes {
                 url
                 altText

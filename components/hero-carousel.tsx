@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Crown, Palette } from "lucide-react"
 
 export default function HeroCarousel({ heroProducts }: { heroProducts: any[] }) {
@@ -41,6 +42,13 @@ export default function HeroCarousel({ heroProducts }: { heroProducts: any[] }) 
             }`}
           />
         ))}
+        {heroProducts.length > 0 && (
+          <Link
+            href={`/products/${heroProducts[currentImageIndex].handle}`}
+            aria-label={`View product: ${heroProducts[currentImageIndex].title}`}
+            className="absolute inset-0 z-10"
+          />
+        )}
       </div>
 
       {/* Category indicator */}
@@ -63,31 +71,6 @@ export default function HeroCarousel({ heroProducts }: { heroProducts: any[] }) 
             }`}
           />
         ))}
-      </div>
-
-      {/* Floating product teasers - Larger for accessibility */}
-      <div className="absolute -top-2 -left-2 bg-white rounded-lg shadow-lg p-3 hidden lg:block card-red cursor-pointer hover:shadow-xl transition-shadow">
-        <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
-            <Crown className="h-4 w-4 text-red-600" />
-          </div>
-          <div>
-            <div className="font-semibold text-sm text-slate-800">Premium Chess Sets</div>
-            <div className="text-sm text-slate-600">Click to explore</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute -bottom-2 -right-2 bg-white rounded-lg shadow-lg p-3 hidden lg:block card-red cursor-pointer hover:shadow-xl transition-shadow">
-        <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 bg-yellow-100 rounded-full flex items-center justify-center">
-            <Palette className="h-4 w-4 text-yellow-600" />
-          </div>
-          <div>
-            <div className="font-semibold text-sm text-slate-800">Print on Demand</div>
-            <div className="text-sm text-slate-600">View collection</div>
-          </div>
-        </div>
       </div>
     </div>
   )

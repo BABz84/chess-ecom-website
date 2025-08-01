@@ -4,6 +4,7 @@ import { Product } from '@/lib/types';
 import ProductCard from '@/components/product-card';
 
 export const runtime = 'edge';
+export const revalidate = 0;
 
 export default async function Page({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
@@ -15,6 +16,7 @@ export default async function Page({ params }: { params: Promise<{ handle: strin
       return product.images.nodes.map((image, index) => ({
         ...product,
         id: `${product.id}-image-${index}`,
+        title: image.altText || product.title,
         featuredImage: {
           url: image.url,
           altText: image.altText || product.title,

@@ -55,7 +55,7 @@ export default function Header() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger className="text-base font-medium text-slate-700 hover:text-red-600 transition-colors">
-                  Print on Demand
+                  Heritage Collection
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>
